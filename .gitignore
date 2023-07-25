@@ -20,3 +20,6 @@ src/.mypy_cache/
 
 # Pyenv
 .python-version
+
+# OSS Audit/Testing
+requirements-dev.txt

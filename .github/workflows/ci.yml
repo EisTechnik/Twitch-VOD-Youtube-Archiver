@@ -1,0 +1,50 @@
+name: Static Analysis
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+jobs:
+  ci:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set Up Python
+        id: setup-python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Update Pip
+        run: python -m pip install --upgrade pip
+
+      - name: Set up Poetry
+        uses: abatilo/actions-poetry@v2.0.0
+        with:
+          poetry-version: 1.5.1
+
+      # Poetry has intermittent failures on windows
+      # https://github.com/python-poetry/poetry/issues/7611
+      - name: Export dependencies
+        run: poetry export -o requirements-dev.txt --with dev --without-hashes
+
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Imports Sorted (isort)
+        run: poetry run isort --check -v --diff src
+
+      - name: PEP8 Compliance (flake8)
+        run: poetry run flake8 src
+
+      - name: Code Formatting (black)
+        run: poetry run black --check -v --diff src
+
+      - name: Static Type Check (mypy)
+        run: poetry run mypy src
+
+      - name: Security Test (bandit)
+        run: poetry run bandit -r -ll -f screen src

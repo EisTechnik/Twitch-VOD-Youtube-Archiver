@@ -1,0 +1,34 @@
+[tool.poetry]
+name = "twitch-vod-youtube-archiver"
+version = "0.1.0"
+description = ""
+authors = []
+
+[tool.poetry.dependencies]
+python = "^3.11"
+python-dotenv = "^1.0.0"
+pytz = "^2023.3"
+requests = "^2.31.0"
+iso8601 = "^2.0.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.7.0"
+bandit = "^1.7.5"
+flake8 = "^6.0.0"
+isort = "^5.12.0"
+mypy = "^1.4.1"
+types-pytz = "^2023.3.0.0"
+types-requests = "^2.31.0.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+# User Customizations
+[tool.isort]
+src_paths = ["src"]
+profile = "black"
+
+[tool.mypy]
+disable_error_code = "annotation-unchecked"
+ignore_missing_imports = true

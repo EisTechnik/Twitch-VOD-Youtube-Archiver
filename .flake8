@@ -1,0 +1,4 @@
+[flake8]
+max-line-length=120
+#E203 has a conflict with Black
+extend-ignore=E203 
