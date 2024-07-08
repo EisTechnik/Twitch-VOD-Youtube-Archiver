@@ -70,6 +70,9 @@ class Config:
     divide_time_seconds: int = field(default=43197)
     order_before_upload: bool = field(default=False)
     cookies_file_name: str = field(default="")
+    title_prefix: Union[None, str] = field(default=None)
+    title_part_format: Union[None, str] = field(default="[Part {PART_FORMAT}]")
+    title_omit_part_if_missing: Union[None, bool] = field(default=False)
 
 
 class ConfigManager:
@@ -156,6 +159,18 @@ class ConfigManager:
                     after_time, "%Y-%m-%d %H:%M:%S"
                 ).timestamp()
                 scrape_config["after_time"] = parsed_after_timestamp
+
+            title_prefix = loaded_config.get("title_prefix")
+            if title_prefix is not None:
+                dataclass_constructor["title_prefix"] = title_prefix
+            title_part_format = loaded_config.get("title_part_format")
+            if title_part_format is not None:
+                dataclass_constructor["title_part_format"] = title_part_format
+            title_omit_part_if_missing = loaded_config.get("title_omit_part_if_missing")
+            if title_omit_part_if_missing is not None:
+                dataclass_constructor["title_omit_part_if_missing"] = (
+                    title_omit_part_if_missing
+                )
 
             download_config = loaded_config.get("download_cfg", {})
             env_keys = loaded_config.get("env_keys", {})
