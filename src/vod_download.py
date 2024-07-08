@@ -94,6 +94,7 @@ def download_vods(cfg: Config):
         do_log(f"[Downloading VOD {index+1}/{len(vods_to_download)}]")
 
         download_cmd = download_cmd_raw.format(file_name=vod.file_name, vod_url=vod.url)
+        print(download_cmd)
 
         completed_process = subprocess.run(  # nosec B603
             download_cmd,
@@ -123,9 +124,13 @@ def download_vods(cfg: Config):
                     download_cmd, cwd=cfg.recording_path, stderr=subprocess.PIPE
                 )
             else:
-                log_error(f"Error in 'download' subprocess: {error}")
-                # TODO: Admin alert
-                exit()
+                log_error(f"Error in 'download' subprocess: '{error}'")
+                if error == "ERROR: 'NoneType' object is not subscriptable\n":
+                    log_error("Couldn't get vod: Recently deleted?")
+                    break
+                else:
+                    # TODO: Admin alert
+                    exit()
 
         # Update status in datafile
         data_file[vod.id]["status"] = VODStatus.DOWNLOADED
@@ -361,3 +366,43 @@ def order_vods(cfg: Config):
 
     with open(Path(DATA_PATH, data_file_name), "w") as json_file:
         json.dump(data_file, json_file, indent=2)
+
+
+def rename_vods(cfg: Config):
+    if cfg.title_prefix is None:
+        do_log(f'[Skipping rename for "{cfg.twitch_channel_name}" channel]')
+        return
+
+    upload_folder = Path(cfg.recording_path, UPLOAD_FOLDER_NAME)
+    upload_folder.mkdir(parents=True, exist_ok=True)
+
+    do_log(f'[Renaming VODs for "{cfg.twitch_channel_name}" channel]')
+
+    # TODO: Make better
+
+    files = sorted([file for file in Path(upload_folder).glob("*.mp4")])
+    file_names = [file.name for file in files]
+    for file in sorted([file for file in Path(upload_folder).glob("*.mp4")]):
+        if file.name.startswith(cfg.title_prefix):
+            continue
+        file_split = file.name.rstrip(".mp4").split("_")
+        if len(file_split) == 1:
+            date = file_split[0]
+            part = 1
+        else:
+            date, part = file_split
+        part = int(part)
+        part_str = cfg.title_part_format.replace("{PART_FORMAT}", str(part))
+
+        new_name = f"{cfg.title_prefix} [{date}] {part_str}.mp4"
+        name_without_part = f"{cfg.title_prefix} [{date}].mp4"
+
+        if cfg.title_omit_part_if_missing and part == 1:
+            potential_part_2_name = f"{date}_002.mp4"
+            if potential_part_2_name not in file_names:
+                new_name = name_without_part
+
+        new_path = Path(upload_folder, new_name)
+
+        print(f"Renaming '{file.name}' to '{new_name}'")
+        rename(file, new_path)

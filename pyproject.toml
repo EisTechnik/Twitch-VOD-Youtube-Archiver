@@ -8,11 +8,11 @@ authors = []
 python = "^3.11"
 python-dotenv = "^1.0.0"
 pytz = "^2023.3"
-requests = "^2.31.0"
+requests = "^2.32.0"
 iso8601 = "^2.0.0"
 
 [tool.poetry.group.dev.dependencies]
-black = "^23.7.0"
+black = "^24.3.0"
 bandit = "^1.7.5"
 flake8 = "^6.0.0"
 isort = "^5.12.0"
