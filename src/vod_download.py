@@ -390,8 +390,11 @@ def rename_vods(cfg: Config):
             date = file_split[0]
             part = 1
         else:
-            date, part = file_split
+            date, part = file_split # type: ignore
         part = int(part)
+        if cfg.title_part_format is None:
+            print("No title_part_format defined, skipping")
+            continue
         part_str = cfg.title_part_format.replace("{PART_FORMAT}", str(part))
 
         new_name = f"{cfg.title_prefix} [{date}] {part_str}.mp4"

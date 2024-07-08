@@ -272,9 +272,11 @@ def scrape_vods(cfg: Config):
                 expected_splits = [
                     {
                         "name": f"{file_name}_{split:03}",
-                        "duration": cfg.divide_time_seconds
-                        if split != split_amount - 1
-                        else (vod_duration % cfg.divide_time_seconds),
+                        "duration": (
+                            cfg.divide_time_seconds
+                            if split != split_amount - 1
+                            else (vod_duration % cfg.divide_time_seconds)
+                        ),
                     }
                     for split in range(split_amount)
                 ]
