@@ -2,7 +2,7 @@ from traceback import format_exc
 
 from config import ConfigManager
 from utilities import log_error
-from vod_download import download_vods, fixup_vods, order_vods, split_vods
+from vod_download import download_vods, fixup_vods, order_vods, rename_vods, split_vods
 from vod_scrape import scrape_vods
 
 
@@ -26,6 +26,10 @@ def main():
     for config in dl_configs:
         if config.order_before_upload:
             order_vods(config)
+            print("\n\n\n\n\n")
+    for config in dl_configs:
+        if config.order_before_upload:
+            rename_vods(config)
             print("\n\n\n\n\n")
 
 

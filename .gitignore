@@ -3,6 +3,7 @@ src/config.json
 src/data/
 src/*.log
 src/cookies
+*.log
 
 # .env
 src/.env
