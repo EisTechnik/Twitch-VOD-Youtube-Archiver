@@ -390,7 +390,7 @@ def rename_vods(cfg: Config):
             date = file_split[0]
             part = 1
         else:
-            date, part = file_split # type: ignore
+            date, part = file_split  # type: ignore
         part = int(part)
         if cfg.title_part_format is None:
             print("No title_part_format defined, skipping")
