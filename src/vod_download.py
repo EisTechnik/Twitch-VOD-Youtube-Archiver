@@ -103,6 +103,7 @@ def download_vods(cfg: Config):
         )
         expected_error1 = PART_ERROR1.format(file_name=vod.file_name)
         expected_error2 = PART_ERROR2.format(file_name=vod.file_name)
+        error = ""
         while completed_process.returncode != 0:
             print("\n")  # clear buffer
             error = (
@@ -132,10 +133,11 @@ def download_vods(cfg: Config):
                     # TODO: Admin alert
                     exit()
 
-        # Update status in datafile
-        data_file[vod.id]["status"] = VODStatus.DOWNLOADED
-        with open(Path(DATA_PATH, data_file_name), "w") as json_file:
-            json.dump(data_file, json_file, indent=2)
+        if not error:
+            # Update status in datafile
+            data_file[vod.id]["status"] = VODStatus.DOWNLOADED
+            with open(Path(DATA_PATH, data_file_name), "w") as json_file:
+                json.dump(data_file, json_file, indent=2)
 
 
 def fixup_vods(cfg: Config):
