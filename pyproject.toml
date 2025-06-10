@@ -9,7 +9,7 @@ package-mode = false
 python = "^3.11"
 python-dotenv = "^1.0.0"
 pytz = "^2023.3"
-requests = "^2.32.0"
+requests = "^2.32.4"
 iso8601 = "^2.0.0"
 
 [tool.poetry.group.dev.dependencies]
